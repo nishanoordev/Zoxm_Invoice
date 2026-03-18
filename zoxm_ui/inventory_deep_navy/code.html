@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>BillSnap - Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#272756",
+                        "accent": "#ec5b13",
+                        "background-light": "#f4f4f8",
+                        "background-dark": "#1a1a3a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            min-height: max(884px, 100dvh);
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .material-symbols-outlined.fill-\[1\] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto shadow-2xl bg-background-light dark:bg-background-dark border-x border-primary/10">
+<!-- Header Section -->
+<header class="pt-6 px-4 pb-2 space-y-4 bg-background-light dark:bg-background-dark sticky top-0 z-10">
+<div class="flex items-center justify-between">
+<h1 class="text-2xl font-bold tracking-tight text-primary dark:text-white">Inventory</h1>
+<button class="flex items-center justify-center size-10 rounded-full bg-accent text-white hover:bg-accent/90 transition-colors shadow-lg">
+<span class="material-symbols-outlined">add</span>
+</button>
+</div>
+<!-- Search Bar -->
+<div class="relative">
+<label class="flex flex-col w-full">
+<div class="flex items-center rounded-xl bg-white dark:bg-primary/20 border border-primary/10 focus-within:border-primary px-4 py-2.5 transition-all shadow-sm">
+<span class="material-symbols-outlined text-primary/60 dark:text-primary/40 mr-2">search</span>
+<input class="w-full bg-transparent border-none p-0 focus:ring-0 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 text-sm" placeholder="Search items, SKUs..." type="text"/>
+</div>
+</label>
+</div>
+<!-- Bulk Actions Bar -->
+<div class="flex items-center gap-2 py-1.5 px-1 bg-white dark:bg-primary/30 rounded-lg border border-primary/10 shadow-sm">
+<div class="flex-none px-2 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider border-r border-slate-200 dark:border-primary/20">Bulk</div>
+<div class="flex flex-1 gap-2 overflow-x-auto no-scrollbar">
+<button class="flex shrink-0 items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold text-primary dark:text-slate-300 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-accent">upload_file</span>
+                        Import
+                    </button>
+<button class="flex shrink-0 items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold text-primary dark:text-slate-300 hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[16px] text-accent">download</span>
+                        Export CSV
+                    </button>
+</div>
+</div>
+<!-- Quick Filters -->
+<div class="flex gap-2 overflow-x-auto pb-2 no-scrollbar">
+<button class="flex h-8 shrink-0 items-center justify-center gap-1 rounded-full bg-primary text-white px-4 text-xs font-semibold">
+                    All
+                </button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-1 rounded-full bg-white dark:bg-primary/40 text-slate-700 dark:text-slate-300 px-4 text-xs font-medium border border-primary/10">
+                    Electronics
+                    <span class="material-symbols-outlined text-[16px]">keyboard_arrow_down</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-1 rounded-full bg-white dark:bg-primary/40 text-slate-700 dark:text-slate-300 px-4 text-xs font-medium border border-primary/10">
+                    Office
+                    <span class="material-symbols-outlined text-[16px]">keyboard_arrow_down</span>
+</button>
+<button class="flex h-8 shrink-0 items-center justify-center gap-1 rounded-full bg-white dark:bg-primary/40 text-slate-700 dark:text-slate-300 px-4 text-xs font-medium border border-primary/10">
+                    Furniture
+                    <span class="material-symbols-outlined text-[16px]">keyboard_arrow_down</span>
+</button>
+</div>
+</header>
+<!-- Inventory List -->
+<main class="flex-1 overflow-y-auto px-4 pb-24 space-y-3">
+<!-- Item Card 1 -->
+<div class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-primary/20 border border-primary/5 shadow-sm">
+<div class="size-16 rounded-lg bg-primary/5 dark:bg-primary/40 flex items-center justify-center overflow-hidden border border-primary/10">
+<img class="object-cover size-full" data-alt="Ergonomic wireless computer mouse on desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCopIIz1juFiI494W33OpP4KHTHv0pAWyz6pcb9uTTOZry85wjFIB-am-pt0JKjo1UDB7ZoDJlQ6gQMf8vN7Wh0L7XMT65YZh0P0h-h8Eld-dnfW4A7z5HlBL4PHY-s5XF64ix-H_8-SeIxTGfBc3WDQiYdGl6jH7Ntk8FCfeJF5IaThlQecQD-vg23GmQ4Z5bhrPsHVWTiTfH937GvNZ-Wc21_Er5TqVTVmJJdKSD8a7rRR92yHS09S0UZIkjIN3cUR0XqgF951ag"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">Wireless Mouse</p>
+<span class="px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary/40 text-primary dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider">Electronics</span>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SKU: WM-001</p>
+<div class="flex items-center justify-between mt-1.5">
+<p class="text-sm font-semibold text-accent">$25.00</p>
+<div class="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-primary/60 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] text-green-500">inventory_2</span>
+                            15 units
+                        </div>
+</div>
+</div>
+<button class="text-accent hover:bg-accent/10 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+</button>
+</div>
+<!-- Item Card 2 -->
+<div class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-primary/20 border border-primary/5 shadow-sm">
+<div class="size-16 rounded-lg bg-primary/5 dark:bg-primary/40 flex items-center justify-center overflow-hidden border border-primary/10">
+<img class="object-cover size-full" data-alt="High quality professional studio headphones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwES4PSEN9Iz3Oq9LrFc-PimlUOsoXZe01NslwyEBcQ7JiPF-PlfaUhQb0PfvFQJHFxUXVMkmxssYocwJ5NDe-z2ae7_0xICTA7UxfSFyaCmVStDd6tkVsKpIsxFf4PJlE6mwtwFSqSL9vx9HE_CWitcBB2iPg910aw7hNct7qrMhybOYEDsXBCkwZkXeHAjGaeTQgD6u1_mJswyYCpArV_sgkMVOsKy2-lVMUVuhPs1A780As-wD2cUt087SkzuMDmVBGKLB_ajs"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">Pro Headphones</p>
+<span class="px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary/40 text-primary dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider">Electronics</span>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SKU: PH-102</p>
+<div class="flex items-center justify-between mt-1.5">
+<p class="text-sm font-semibold text-accent">$120.00</p>
+<div class="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-primary/60 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] text-orange-500">inventory_2</span>
+                            4 units
+                        </div>
+</div>
+</div>
+<button class="text-accent hover:bg-accent/10 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+</button>
+</div>
+<!-- Item Card 3 -->
+<div class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-primary/20 border border-primary/5 shadow-sm">
+<div class="size-16 rounded-lg bg-primary/5 dark:bg-primary/40 flex items-center justify-center overflow-hidden border border-primary/10">
+<img class="object-cover size-full" data-alt="Modern minimal desk lamp" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCko-uhM2SOAYB1N1QCXw_1YQMJ-DLiiY1GhuotE5QklEpcneTuebygDVO3OYW1GGTQb00fJeJxh7wPmYQpJlSG36sT3LERE_OFJi4pktG4jJlamG5V0dVd7S8aGyuCFgWnVeQF2sOO37ZbEKJ2AJHM9Ji1DbDJ7GtZ0r4_qD0fpTSHeCUBhMpqJN1xjppI_uxWp4NEfddHQOQ7doOaVgw4glbm4iXNrRThMHOV1_uo9LVg3sFj1hiuAOAKkFKmpQxNIz3qVmnUY5M"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">LED Desk Lamp</p>
+<span class="px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary/40 text-primary dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider">Office</span>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SKU: DL-88</p>
+<div class="flex items-center justify-between mt-1.5">
+<p class="text-sm font-semibold text-accent">$45.00</p>
+<div class="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-primary/60 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] text-green-500">inventory_2</span>
+                            42 units
+                        </div>
+</div>
+</div>
+<button class="text-accent hover:bg-accent/10 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+</button>
+</div>
+<!-- Item Card 4 (Low Stock) -->
+<div class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-primary/20 border border-red-500/20 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 w-16 h-16 pointer-events-none">
+<div class="absolute top-2 -right-4 bg-red-500 text-white text-[8px] font-bold py-0.5 px-5 rotate-45 uppercase">Low</div>
+</div>
+<div class="size-16 rounded-lg bg-primary/5 dark:bg-primary/40 flex items-center justify-center overflow-hidden border border-primary/10">
+<img class="object-cover size-full" data-alt="Laptop computer on wooden desk" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNz2SjLHkPDfFSZnifDNMancvA8o_AjKzoLqlLsomjXLBz5vLUu_1SxBQVnUp5c_K1xlXLEGtX48-wPTLoUx8AqQZE9PZ5R6wzU59SasHliZQH8q7eYwFocs1XoudAgqhgfPhUnbteTD2IIapFVGI1RzL_91O2_qnofbHcQQtl3USAuTvMwHLo_BFfK6GQc0FS0ejrJBiLY8qPBUIRVuH-PAfAcWW5jyGf5bSoB0rYJDwNSvp1zfvdTDpfxhyUNspiidyhDjoRH8I"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">MacBook Stand</p>
+<span class="px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary/40 text-primary dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider">Office</span>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SKU: MS-099</p>
+<div class="flex items-center justify-between mt-1.5">
+<p class="text-sm font-semibold text-accent">$59.00</p>
+<div class="flex items-center gap-1 text-[11px] font-medium text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]">priority_high</span>
+                            2 units
+                        </div>
+</div>
+</div>
+<button class="text-accent hover:bg-accent/10 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+</button>
+</div>
+<!-- Item Card 5 -->
+<div class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-primary/20 border border-primary/5 shadow-sm">
+<div class="size-16 rounded-lg bg-primary/5 dark:bg-primary/40 flex items-center justify-center overflow-hidden border border-primary/10">
+<img class="object-cover size-full" data-alt="Sleek modern office chair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPG-nmt8vtQ_TwPZkxObnlnjrFyTnxHHNKOoffkO1MPK99EPJstrLL3-tvXHLcx8gFl2a-erx4gpsjOXMRt_nwvZcezrlVtPQkw5NN3o4plTuq-EIB0A5-HQPhrlFOxN_LOvHmulRWRFqDSeT4wjH55eKF7D5-b8KYE6KhJdYiruKYNwDuV3hl7GrAkrYmC6vj2yAKEPXWD-OXLZmBV3t8MB5goEsjDeRH23ORe_P7J6UJ1inEXsyCv4tzPNiCABmMoMCpkuL7iEg"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">Ergo Chair V2</p>
+<span class="px-2 py-0.5 rounded-full bg-primary/5 dark:bg-primary/40 text-primary dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider">Furniture</span>
+</div>
+<p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">SKU: EC-400</p>
+<div class="flex items-center justify-between mt-1.5">
+<p class="text-sm font-semibold text-accent">$349.00</p>
+<div class="flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-primary/60 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px] text-green-500">inventory_2</span>
+                            8 units
+                        </div>
+</div>
+</div>
+<button class="text-accent hover:bg-accent/10 p-2 rounded-lg transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+</button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="absolute bottom-0 left-0 right-0 border-t border-primary/10 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md px-4 pb-6 pt-2 flex justify-between items-center z-20">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="text-[10px] font-medium">Customers</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary dark:text-slate-100 transition-colors" href="#">
+<span class="material-symbols-outlined fill-[1] text-accent">inventory_2</span>
+<span class="text-[10px] font-bold">Items</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<span class="text-[10px] font-medium">Invoices</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500 transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="text-[10px] font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</body></html>

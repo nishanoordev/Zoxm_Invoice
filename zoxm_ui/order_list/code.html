@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Shop Management - Orders</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ec5b13",
+                        "background-light": "#f8f6f6",
+                        "background-dark": "#221610",
+                        "navy-deep": "#272756",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="relative flex h-screen w-full flex-col bg-slate-50 overflow-hidden">
+<!-- Header -->
+<header class="flex items-center bg-white border-b border-slate-200 p-4 justify-between sticky top-0 z-10">
+<div class="text-slate-900 flex size-10 shrink-0 items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h2 class="text-slate-900 text-lg font-bold leading-tight tracking-tight flex-1 ml-2">Orders</h2>
+<div class="flex w-12 items-center justify-end">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-slate-100 text-slate-700">
+<span class="material-symbols-outlined">search</span>
+</button>
+</div>
+</header>
+<!-- Filters -->
+<div class="flex gap-3 p-4 overflow-x-auto custom-scrollbar bg-white">
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-navy-deep px-5 text-white shadow-sm transition-all">
+<p class="text-sm font-semibold leading-normal">All Orders</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-100 px-5 text-slate-600 hover:bg-slate-200">
+<p class="text-sm font-medium leading-normal">Pending</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-100 px-5 text-slate-600 hover:bg-slate-200">
+<p class="text-sm font-medium leading-normal">Processing</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-100 px-5 text-slate-600 hover:bg-slate-200">
+<p class="text-sm font-medium leading-normal">Completed</p>
+</button>
+<button class="flex h-9 shrink-0 items-center justify-center gap-x-2 rounded-full bg-slate-100 px-5 text-slate-600 hover:bg-slate-200">
+<p class="text-sm font-medium leading-normal">Cancelled</p>
+</button>
+</div>
+<!-- Orders List -->
+<main class="flex-1 overflow-y-auto p-4 space-y-4 pb-24">
+<!-- Order Card 1 -->
+<div class="group flex flex-col items-stretch justify-start rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-3">
+<span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                        Pending
+                    </span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Order #ORD-8492</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-lg bg-navy-deep/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-navy-deep">inventory_2</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 text-base font-bold">Alex Rivera</p>
+<p class="text-slate-500 text-sm">Oct 24, 2023 • 2:30 PM</p>
+</div>
+<div class="text-right">
+<p class="text-navy-deep text-lg font-bold">$124.50</p>
+<p class="text-slate-400 text-xs font-medium">3 items</p>
+</div>
+</div>
+</div>
+<!-- Order Card 2 -->
+<div class="group flex flex-col items-stretch justify-start rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-3">
+<span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+                        Completed
+                    </span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Order #ORD-8491</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-lg bg-navy-deep/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-navy-deep">local_shipping</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 text-base font-bold">Sarah Jenkins</p>
+<p class="text-slate-500 text-sm">Oct 23, 2023 • 11:15 AM</p>
+</div>
+<div class="text-right">
+<p class="text-navy-deep text-lg font-bold">$45.00</p>
+<p class="text-slate-400 text-xs font-medium">1 item</p>
+</div>
+</div>
+</div>
+<!-- Order Card 3 -->
+<div class="group flex flex-col items-stretch justify-start rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-3">
+<span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
+                        Processing
+                    </span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Order #ORD-8490</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-lg bg-navy-deep/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-navy-deep">cached</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 text-base font-bold">Michael Chen</p>
+<p class="text-slate-500 text-sm">Oct 23, 2023 • 09:45 AM</p>
+</div>
+<div class="text-right">
+<p class="text-navy-deep text-lg font-bold">$210.99</p>
+<p class="text-slate-400 text-xs font-medium">5 items</p>
+</div>
+</div>
+</div>
+<!-- Order Card 4 -->
+<div class="group flex flex-col items-stretch justify-start rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow">
+<div class="flex items-center justify-between mb-3">
+<span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700">
+                        Cancelled
+                    </span>
+<p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Order #ORD-8489</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="h-14 w-14 rounded-lg bg-navy-deep/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-navy-deep">cancel</span>
+</div>
+<div class="flex flex-col flex-1">
+<p class="text-slate-900 text-base font-bold">Emma Wilson</p>
+<p class="text-slate-500 text-sm">Oct 22, 2023 • 4:20 PM</p>
+</div>
+<div class="text-right">
+<p class="text-navy-deep text-lg font-bold">$89.30</p>
+<p class="text-slate-400 text-xs font-medium">2 items</p>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed bottom-24 right-6 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-xl hover:scale-105 active:scale-95 transition-transform z-20">
+<span class="material-symbols-outlined text-2xl">add</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 border-t border-slate-200 bg-white px-4 pb-6 pt-2 z-10">
+<div class="flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-navy-deep" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">receipt_long</span>
+<p class="text-[10px] font-bold leading-normal tracking-wide">Orders</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">description</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide">Invoices</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-[10px] font-semibold leading-normal tracking-wide">Settings</p>
+</a>
+</div>
+</nav>
+</div>
+</body></html>

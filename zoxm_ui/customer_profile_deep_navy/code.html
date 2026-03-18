@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#272756",
+                        "background-light": "#f8f9fa",
+                        "background-dark": "#0f172a",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Header / Navigation Top Bar -->
+<div class="flex items-center bg-primary text-white p-4 sticky top-0 z-20 shadow-md">
+<button class="text-white p-1 hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h2 class="text-lg font-semibold ml-4 flex-1">Customer Profile</h2>
+<div class="flex items-center gap-2">
+<button class="p-2 text-white hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">search</span>
+</button>
+<button class="p-2 text-white hover:bg-white/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</div>
+<!-- Customer Identity Section -->
+<div class="p-4 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800">
+<div class="flex flex-col @container">
+<div class="flex w-full flex-col gap-4 @[520px]:flex-row @[520px]:justify-between @[520px]:items-center">
+<div class="flex gap-4 items-center">
+<div class="bg-primary/10 flex items-center justify-center rounded-full h-20 w-20 text-primary font-bold text-2xl border-2 border-primary/20">
+                            AT
+                        </div>
+<div class="flex flex-col justify-center">
+<h1 class="text-2xl font-bold tracking-tight">ABC Trading</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">mail</span> contact@abctrading.com
+                            </p>
+<p class="text-slate-500 dark:text-slate-400 text-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">call</span> +1 (555) 012-3456
+                            </p>
+</div>
+</div>
+<div class="flex w-full max-w-[480px] gap-3 @[480px]:w-auto">
+<button class="flex-1 @[480px]:flex-none flex min-w-[120px] items-center justify-center rounded-lg h-10 px-4 bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 text-sm font-semibold border border-slate-200 dark:border-slate-700">
+                            Edit Profile
+                        </button>
+<button class="flex-1 @[480px]:flex-none flex min-w-[120px] items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-semibold shadow-sm">
+                            New Invoice
+                        </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Key Metrics Row -->
+<div class="flex flex-wrap gap-4 p-4">
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Total Receivables</p>
+<p class="text-2xl font-bold text-primary">$1,200.00</p>
+</div>
+<div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-500 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Unused Credits</p>
+<p class="text-2xl font-bold text-slate-900 dark:text-slate-100">$0.00</p>
+</div>
+</div>
+<!-- Tabs Navigation -->
+<div class="px-4 bg-white dark:bg-slate-900 border-y border-slate-200 dark:border-slate-800 sticky top-[68px] z-10">
+<div class="flex gap-1">
+<button class="py-4 px-2 border-b-2 border-primary text-primary text-sm font-bold">Details</button>
+<button class="py-4 px-2 border-b-2 border-transparent text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors">Transactions</button>
+<button class="py-4 px-2 border-b-2 border-transparent text-slate-500 dark:text-slate-400 text-sm font-medium hover:text-primary transition-colors">Timeline</button>
+</div>
+</div>
+<!-- Tab Content: Details (Active) -->
+<div class="p-4 space-y-6 flex-1">
+<section class="space-y-4">
+<div class="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-semibold">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<h3>Billing Address</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-600 dark:text-slate-300 leading-relaxed">
+                        123 Business Avenue, Suite 500<br/>
+                        Industrial Park East<br/>
+                        New York, NY 10001
+                    </p>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-semibold">
+<span class="material-symbols-outlined text-primary">contact_phone</span>
+<h3>Primary Contact</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<div class="flex justify-between items-center">
+<div>
+<p class="font-medium">John Doe</p>
+<p class="text-sm text-slate-500 dark:text-slate-400">Procurement Manager</p>
+</div>
+<a class="text-primary bg-primary/10 p-2 rounded-full hover:bg-primary/20 transition-colors" href="tel:5550123456">
+<span class="material-symbols-outlined">call</span>
+</a>
+</div>
+</div>
+</section>
+<section class="space-y-4">
+<div class="flex items-center gap-2 text-slate-900 dark:text-slate-100 font-semibold">
+<span class="material-symbols-outlined text-primary">notes</span>
+<h3>Internal Notes</h3>
+</div>
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
+<p class="text-slate-600 dark:text-slate-300 italic">
+                        "Prefers digital invoices via email. Net 30 payment terms applied. Always pays on time. Contact John for all billing discrepancies."
+                    </p>
+</div>
+</section>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 px-4 pb-4 pt-2 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
+<div class="flex gap-2">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+<p class="text-[10px] font-medium uppercase tracking-wider">Customers</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<p class="text-[10px] font-medium uppercase tracking-wider">Invoices</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<p class="text-[10px] font-medium uppercase tracking-wider">Reports</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-[10px] font-medium uppercase tracking-wider">Settings</p>
+</a>
+</div>
+</div>
+</div>
+<!-- Hidden placeholders for reference components like Transactions and Timeline if toggled -->
+<div class="hidden">
+<!-- Transaction List Example -->
+<div class="flex items-center justify-between p-4 bg-white border-b">
+<div class="flex items-center gap-3">
+<div class="bg-red-100 text-red-600 p-2 rounded-full"><span class="material-symbols-outlined">warning</span></div>
+<div>
+<p class="font-semibold">#INV-2023-001</p>
+<p class="text-xs text-slate-500">Oct 12, 2023</p>
+</div>
+</div>
+<div class="text-right">
+<p class="font-bold">$850.00</p>
+<span class="text-[10px] px-2 py-0.5 bg-red-100 text-red-700 rounded-full font-bold uppercase">Overdue</span>
+</div>
+</div>
+<!-- Timeline Activity Example -->
+<div class="flex gap-4 p-4">
+<div class="flex flex-col items-center">
+<div class="h-3 w-3 rounded-full bg-primary ring-4 ring-primary/20"></div>
+<div class="w-0.5 h-full bg-slate-200 mt-1"></div>
+</div>
+<div>
+<p class="text-sm font-semibold">Invoice #INV-001 created</p>
+<p class="text-xs text-slate-500">2 hours ago by Admin</p>
+</div>
+</div>
+</div>
+</body></html>
