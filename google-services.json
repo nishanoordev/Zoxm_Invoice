@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "993971900127",
+    "firebase_url": "https://zoxm-invoice-1-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "zoxm-invoice-1",
+    "storage_bucket": "zoxm-invoice-1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993971900127:android:01b409a6db9d0b6536e36a",
+        "android_client_info": {
+          "package_name": "com.nishanoor.zoxm_invoice"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993971900127-vas6uul1o1gccha8entmg1ba7ohqo1u1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nishanoor.zoxm_invoice",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "993971900127-up5903rc38rgnqj0hfds8ut1q6nhr2lp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_w10e3GGinVsj9hIJZ5mY4U5dXJAztZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993971900127-a6dens9r48ve61r01ju6hjq0hu27966o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "993971900127-p6gdpov7bqnhfqlnmrslm82ffm8ots5s.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.nishanoor.zoxm_invoice"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

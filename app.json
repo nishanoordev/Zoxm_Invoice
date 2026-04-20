@@ -1,6 +1,8 @@
 {
   "expo": {
-    "name": "ZoxmInvoice",
+    "owner": "nishanoor",
+    "scheme": "zoxminvoice",
+    "name": "ZOXM Invoice",
     "slug": "ZoxmInvoice",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -12,12 +14,14 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nishanoor.zoxm_invoice"
     },
     "android": {
       "package": "com.nishanoor.zoxm_invoice",
+      "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#ffffff",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -34,7 +38,39 @@
     },
     "plugins": [
       "expo-sqlite",
-      "expo-sharing"
+      "expo-sharing",
+      "expo-camera",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow ZOXM Invoice to save barcodes to your gallery.",
+          "savePhotosPermission": "Allow ZOXM Invoice to save barcodes to your gallery."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow ZOXM Invoice to access your photos to set customer profile pictures.",
+          "cameraPermission": "Allow ZOXM Invoice to use the camera to take customer profile pictures."
+        }
+      ],
+      [
+        "expo-contacts",
+        {
+          "contactsPermission": "Allow ZOXM Invoice to access your contacts to import customer details."
+        }
+      ],
+      "expo-mail-composer",
+      "@react-native-community/datetimepicker",
+      "@react-native-google-signin/google-signin",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "newArchEnabled": true
+          }
+        }
+      ]
     ]
   }
 }

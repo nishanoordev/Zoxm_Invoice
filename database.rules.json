@@ -1,0 +1,47 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+
+    "businesses": {
+      "$businessId": {
+        // Allow read if user belongs to this business
+        ".read": "auth != null && (root.child('users').child(auth.uid).child('businessId').val() === $businessId)",
+
+        // Allow write if user belongs to this business OR if they are creating it as owner (new user flow)
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('businessId').val() === $businessId || data.child('profile/ownerId').val() === auth.uid || !data.exists())",
+
+        // Only admins can change business profile settings
+        "profile": {
+          ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || !data.exists())"
+        },
+
+        // Business members can write invoices
+        "invoices": {
+          "$invoiceId": {
+            ".write": "auth != null && root.child('users').child(auth.uid).child('businessId').val() === $businessId"
+          }
+        }
+      }
+    },
+
+    "users": {
+        // IMPORTANT: Allow fintech admins to securely query for their own staff
+        ".read": "auth != null && query.orderByChild == 'businessId' && query.equalTo == root.child('users').child(auth.uid).child('businessId').val()",
+        ".indexOn": ["businessId"],
+      "$uid": {
+        // Each user can only read/write their own profile without a query
+        ".read":  "auth != null && auth.uid === $uid",
+        ".write": "auth != null && auth.uid === $uid"
+      }
+    },
+
+    // Invite codes — any authenticated user can read to validate, only admins can write
+    "inviteCodes": {
+      "$code": {
+        ".read":  "auth != null",
+        ".write": "auth != null && (root.child('users').child(auth.uid).child('role').val() === 'admin' || !data.exists())"
+      }
+    }
+  }
+}

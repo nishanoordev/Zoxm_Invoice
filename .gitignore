@@ -1,55 +1,78 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# ─────────────────────────────────────────────────────────────
+# ZoxmInvoice — .gitignore
+# Maintained by Antigravity | Last cleaned: 2026-04-21
+# ─────────────────────────────────────────────────────────────
 
-# dependencies
+# ── Dependencies ─────────────────────────────────────────────
 node_modules/
+node_modules*/
 
-# Expo
+# ── Expo / EAS ───────────────────────────────────────────────
 .expo/
 dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# ── Native generated folders ─────────────────────────────────
+/ios
+/android
 .kotlin/
-*.orig.*
+
+# ── Native signing / certs (never commit) ────────────────────
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+*.pem
 
-# Metro
-.metro-health-check*
+# ── Secrets & OAuth credentials ──────────────────────────────
+client_secret*.json
+*.secret.json
+.env
+.env.*
+.env*.local
 
-# debug
+# ── Local database ───────────────────────────────────────────
+*.db
+*.sqlite
+*.sqlite3
+
+# ── Logs & debug output ──────────────────────────────────────
+*.log
+*.orig.*
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+firebase-debug.log
+expo_*.log
+expo_*.txt
 
-# macOS
-.DS_Store
-*.pem
+# ── Screenshot / recording artifacts (debugging) ─────────────
+*.png
+*.jpg
+*.jpeg
+*.mp4
+*.mov
+*.gif
 
-# local env files
-.env*.local
+# ── Temp / experiment folders ─────────────────────────────────
+temp_stitch/
+zoxm_ui/
+stitch_*.html
 
-# typescript
+# ── Build output ─────────────────────────────────────────────
+/build
+/out
+
+# ── Metro bundler ────────────────────────────────────────────
+.metro-health-check*
+
+# ── TypeScript ───────────────────────────────────────────────
 *.tsbuildinfo
 
-# generated native folders
-/ios
-/android
+# ── macOS ────────────────────────────────────────────────────
+.DS_Store
 
-# Backup node_modules (should never be committed)
-node_modules*/
-
-# Local SQLite database
-*.db
-
-# Screenshot artifacts
-screen*.png
-recapture*.png
-settings_screen.png
-stitch_*.html
-stitch_*.png
-temp_stitch/
+# ── Editor ───────────────────────────────────────────────────
+.vscode/settings.json
