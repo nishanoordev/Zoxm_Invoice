@@ -39,3 +39,17 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Backup node_modules (should never be committed)
+node_modules*/
+
+# Local SQLite database
+*.db
+
+# Screenshot artifacts
+screen*.png
+recapture*.png
+settings_screen.png
+stitch_*.html
+stitch_*.png
+temp_stitch/
