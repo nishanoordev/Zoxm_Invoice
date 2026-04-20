@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>More Features - Indigo Ledger</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "inverse-surface": "#2e3133",
+              "on-secondary-fixed-variant": "#3f446a",
+              "on-secondary-container": "#545980",
+              "on-error-container": "#93000a",
+              "secondary-container": "#cdd1ff",
+              "on-secondary": "#ffffff",
+              "background": "#f8f9fc",
+              "surface-container-lowest": "#ffffff",
+              "on-error": "#ffffff",
+              "inverse-primary": "#bfc2f8",
+              "on-primary-container": "#9094c7",
+              "error": "#ba1a1a",
+              "tertiary": "#001d2f",
+              "on-tertiary": "#ffffff",
+              "surface-dim": "#d9dadd",
+              "surface-container-low": "#f2f3f6",
+              "tertiary-fixed-dim": "#8ecdff",
+              "surface-container": "#edeef1",
+              "on-secondary-fixed": "#13183c",
+              "outline-variant": "#c7c5d0",
+              "on-tertiary-fixed": "#001e30",
+              "on-primary-fixed": "#131742",
+              "on-primary": "#ffffff",
+              "tertiary-container": "#00334e",
+              "on-tertiary-container": "#579ed1",
+              "on-background": "#191c1e",
+              "inverse-on-surface": "#f0f1f4",
+              "primary-container": "#282c58",
+              "secondary-fixed": "#dfe0ff",
+              "surface-tint": "#575b8a",
+              "secondary-fixed-dim": "#bfc3f1",
+              "primary-fixed": "#e0e0ff",
+              "surface-bright": "#f8f9fc",
+              "primary-fixed-dim": "#bfc2f8",
+              "error-container": "#ffdad6",
+              "surface-container-high": "#e7e8eb",
+              "outline": "#777680",
+              "on-primary-fixed-variant": "#3f4370",
+              "tertiary-fixed": "#cbe6ff",
+              "surface-container-highest": "#e1e2e5",
+              "secondary": "#575c83",
+              "on-tertiary-fixed-variant": "#004b71",
+              "primary": "#121642",
+              "on-surface": "#191c1e",
+              "surface-variant": "#e1e2e5",
+              "on-surface-variant": "#46464f",
+              "surface": "#f8f9fc"
+            },
+            fontFamily: {
+              "headline": ["Manrope"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "1rem", "xl": "1.25rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+</head>
+<body class="bg-background font-body text-on-background min-h-screen">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-50/80 dark:bg-slate-950/80 backdrop-blur-xl shadow-[0_8px_24px_rgba(18,22,66,0.04)] flex items-center justify-between px-6 h-16">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#121642] dark:text-slate-100">menu</span>
+</button>
+<h1 class="font-['Manrope'] font-bold text-xl tracking-tight text-[#121642] dark:text-slate-100">OTHERS</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[#121642] dark:text-slate-100">search</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xs">JD</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-lg mx-auto">
+<!-- Features Section - Only Pending Orders -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Pending Orders -->
+<div class="bg-surface-container-lowest p-6 rounded-lg shadow-[0_8px_24px_rgba(18,22,66,0.04)] flex flex-col items-start gap-4 transition-all duration-300 hover:scale-[1.02] border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" data-icon="pending_actions">pending_actions</span>
+</div>
+<div>
+<h3 class="font-headline font-bold text-primary text-base">Pending Orders</h3>
+<div class="mt-1 inline-flex items-center px-2 py-0.5 rounded-full bg-tertiary-fixed text-[10px] font-bold text-on-tertiary-fixed-variant uppercase">New</div>
+</div>
+</div>
+</div><!-- Illustration Component -->
+<div class="mt-12 p-8 bg-primary rounded-xl relative overflow-hidden flex flex-col items-center text-center">
+<div class="absolute inset-0 bg-gradient-to-br from-[#282C58] to-[#121642] opacity-90"></div>
+<div class="relative z-10">
+<div class="w-16 h-16 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-white text-3xl" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<h4 class="text-white font-headline font-bold text-lg">Premium Features</h4>
+<p class="text-blue-100/70 text-xs mt-2 max-w-[200px]">Unlock automated tax calculations and recurring billing.</p>
+<button class="mt-6 px-6 py-2 bg-white text-primary rounded-full text-xs font-bold uppercase tracking-wider transition-transform active:scale-95">Upgrade Now</button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full h-20 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-around items-center px-4 pb-safe z-50 border-t border-[#121642]/10 dark:border-white/10 shadow-[0_-4px_20px_rgba(18,22,66,0.04)] rounded-t-2xl">
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 pt-2 transition-all duration-300 ease-in-out hover:text-[#121642]" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 pt-2 transition-all duration-300 ease-in-out hover:text-[#121642]" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Invoices</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 pt-2 transition-all duration-300 ease-in-out hover:text-[#121642]" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">Clients</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#121642] dark:text-white border-t-2 border-[#121642] dark:border-indigo-400 pt-2 transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="more_horiz">more_horiz</span>
+<span class="font-['Inter'] text-[10px] font-bold uppercase tracking-widest mt-1">More</span>
+</a>
+</nav>
+</body></html>

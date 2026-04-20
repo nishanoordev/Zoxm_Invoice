@@ -5,10 +5,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "primary": "#272756",
+        "primary": "#262A56",
         "accent": "#ec5b13",
-        "background-light": "#f8f9fb",
+        "background-light": "#F8F9FE",
         "background-dark": "#0f172a",
+        "card-light": "#FFFFFF",
       },
       fontFamily: {
         "sans": ["Inter", "system-ui", "-apple-system", "sans-serif"]

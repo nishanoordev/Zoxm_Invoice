@@ -2,9 +2,11 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, ImageBackground } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useStore } from '../store/useStore';
 
 export default function HistoryScreen({ navigation }) {
   const insets = useSafeAreaInsets();
+  const profile = useStore(state => state.profile);
   
   return (
     <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark pt-12">
@@ -77,7 +79,7 @@ export default function HistoryScreen({ navigation }) {
                 <View className="w-[2px] bg-slate-200 dark:bg-slate-700 flex-1 -mt-2" />
               </View>
               <View className="flex-1 pb-8 pl-4">
-                <Text className="text-slate-900 dark:text-slate-100 text-base font-semibold">Payment of $500 recorded</Text>
+                <Text className="text-slate-900 dark:text-slate-100 text-base font-semibold">Payment of {profile.currency_symbol || '$'}500 recorded</Text>
                 <Text className="text-slate-500 dark:text-slate-400 text-sm mt-0.5">Yesterday, 10:15 AM</Text>
                 <Text className="text-slate-500 dark:text-slate-400 text-xs italic mt-1">Ref: CHK-299102-ACME</Text>
               </View>

@@ -1,177 +1,355 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, ScrollView, SafeAreaView, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, ScrollView, Platform, Image, Modal } from 'react-native';
+import CalculatorScreen from './CalculatorScreen';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useStore } from '../store/useStore';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { formatAmount } from '../utils/formatters';
+import { calculateCustomerBalances } from '../utils/balanceCalculator';
+import { useColorScheme } from 'nativewind';
+import { useTranslation } from '../i18n/LanguageContext';
+import { useTheme } from '../theme/ThemeContext';
+import { checkPermission } from '../utils/permissions';
 
 export default function DashboardScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+  const [calcVisible, setCalcVisible] = useState(false);
   const profile = useStore(state => state.profile);
   const invoices = useStore(state => state.invoices);
+  const payments = useStore(state => state.payments);
+  const customers = useStore(state => state.customers);
+  const orders = useStore(state => state.orders);
+  const currentRole = useStore(state => state.currentRole);
+  const { colorScheme } = useColorScheme();
+  const isDark = colorScheme === 'dark';
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const isSyncing = useStore(state => state.isSyncing);
+  const lastSyncTime = useStore(state => state.lastSyncTime);
+  
+  // Deriving data - filtering out deleted invoices
+  const activeInvoices = invoices.filter(inv => !inv.isDeleted && (inv.type || 'invoice') !== 'estimate');
+  const totalRevenue = activeInvoices.filter(i => (i.status || '').toLowerCase() === 'paid' || (i.status || '').toLowerCase() === 'sale').reduce((sum, i) => sum + (i.total || 0), 0);
+  const paidCount = activeInvoices.filter(i => (i.status || '').toLowerCase() === 'paid' || (i.status || '').toLowerCase() === 'sale').length;
+  const overdueCount = activeInvoices.filter(i => (i.status || '').toLowerCase() === 'overdue').length;
+  const pendingOrdersCount = orders.filter(o => (o.status || 'Pending') === 'Pending').length;
 
-  // Deriving data
-  const totalRevenue = invoices.filter(i => i.status === 'Paid').reduce((sum, i) => sum + (i.total || 0), 0);
-  const paidCount = invoices.filter(i => i.status === 'Paid').length;
-  const pendingCount = invoices.filter(i => i.status === 'Pending').length;
-  const overdueCount = invoices.filter(i => i.status === 'Overdue').length;
+  // Separate Dues for Invoices and standalone Ledger entries
+  const globalDues = React.useMemo(() => {
+    const round2 = v => Math.round(v * 100) / 100;
+    const result = customers.reduce((acc, c) => {
+      const { totalDue, invoiceDueMap } = calculateCustomerBalances(c.id, invoices, payments);
+      const invDue = Object.values(invoiceDueMap).reduce((s, d) => s + d, 0);
+      const legDue = Math.max(0, totalDue - invDue);
+      
+      return {
+        totalInvoice: acc.totalInvoice + invDue,
+        totalLedger: acc.totalLedger + legDue
+      };
+    }, { totalInvoice: 0, totalLedger: 0 });
 
-  const topRecent = invoices.slice(0, 3);
+    return {
+      totalInvoice: round2(result.totalInvoice),
+      totalLedger: round2(result.totalLedger)
+    };
+  }, [customers, invoices, payments]);
 
-  const getStatusColor = (status) => {
+  const topRecent = activeInvoices.slice(0, 3);
+
+  const getStatusStyle = (status) => {
     switch(status) {
-      case 'Paid': return 'text-green-700 bg-green-100/80 dark:bg-green-900/40 dark:text-green-400';
-      case 'Pending': return 'text-amber-700 bg-amber-100/80 dark:bg-amber-900/40 dark:text-amber-400';
-      case 'Overdue': return 'text-red-700 bg-red-100/80 dark:bg-red-900/40 dark:text-red-400';
-      default: return 'text-slate-700 bg-slate-100/80';
+      case 'Paid': return { bg: isDark ? '#064e3b' : '#def7ec', text: isDark ? '#6ee7b7' : '#03543f' };
+      case 'Pending': return { bg: isDark ? '#78350f' : '#fef3c7', text: isDark ? '#fcd34d' : '#92400e' };
+      case 'Overdue': return { bg: isDark ? '#7f1d1d' : '#fde2e1', text: isDark ? '#fca5a5' : '#9b1c1c' };
+      default: return { bg: isDark ? '#1e293b' : '#f1f5f9', text: isDark ? '#94a3b8' : '#475569' };
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark pt-12">
-      {/* Header */}
-      <View className="flex-row items-center justify-between p-4 bg-primary shadow-lg border-b border-primary z-50">
+    <SafeAreaView className="flex-1 bg-background-light dark:bg-slate-950">
+      {/* Custom Header */}
+      <View style={{ backgroundColor: theme.primary }} className="flex-row items-center justify-between px-4 h-16 shadow-lg shadow-black/20 dark:border-b dark:border-slate-800">
         <View className="flex-row items-center gap-3">
-          <TouchableOpacity className="bg-white/10 p-2 rounded-lg">
-            <MaterialIcons name="receipt-long" size={24} color="white" />
-          </TouchableOpacity>
+          <View className="w-11 h-11 items-center justify-center rounded-2xl bg-white/15 overflow-hidden">
+            {profile.logo_uri ? (
+              <Image source={{ uri: profile.logo_uri }} style={{ width: 44, height: 44 }} resizeMode="cover" />
+            ) : (
+              <View className="bg-white rounded-[10px] items-center justify-center" style={{ width: 34, height: 34, padding: 6 }}>
+                <Image source={require('../../assets/icon.png')} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+              </View>
+            )}
+          </View>
           <View>
-            <Text className="text-xl font-extrabold text-white tracking-tight leading-none">Zoxm Invoice</Text>
-            <Text className="text-[10px] text-white/70 font-semibold uppercase tracking-[0.1em] mt-0.5">Business Solutions</Text>
+            <Text className="text-white text-lg font-black tracking-tight" numberOfLines={1}>
+              {profile.name || 'Guest User'}
+            </Text>
+            <View className="flex-row items-center gap-1">
+              <Text className="text-white/60 text-[8px] font-bold uppercase tracking-[0.2em]">
+                {profile.business_role || t('storeOwner')}
+              </Text>
+              {lastSyncTime && (
+                <View className="flex-row items-center gap-0.5">
+                  <View className="w-1 h-1 rounded-full bg-emerald-400" />
+                  <Text className="text-white/40 text-[7px] font-medium uppercase tracking-[0.1em]">Cloud Sync: {new Date(lastSyncTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                </View>
+              )}
+            </View>
           </View>
         </View>
+        
         <View className="flex-row items-center gap-2">
-          <TouchableOpacity className="w-10 h-10 rounded-full bg-white/10 items-center justify-center">
-            <MaterialIcons name="notifications" size={22} color="white" />
+          {isSyncing && (
+            <View className="w-8 h-8 rounded-full bg-white/10 items-center justify-center">
+              <MaterialCommunityIcons name="cloud-sync" size={18} color="white" />
+            </View>
+          )}
+          <TouchableOpacity
+            onPress={() => setCalcVisible(true)}
+            className="w-10 h-10 rounded-full bg-white/10 items-center justify-center"
+          >
+            <MaterialCommunityIcons name="calculator-variant" size={20} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity className="w-10 h-10 rounded-full bg-white/10 items-center justify-center">
+          <TouchableOpacity
+            onPress={() => navigation.navigate('Settings')}
+            className="w-10 h-10 rounded-full bg-white/10 items-center justify-center"
+          >
             <MaterialIcons name="account-circle" size={22} color="white" />
           </TouchableOpacity>
         </View>
       </View>
 
-      <ScrollView className="flex-1 px-4 pt-4 pb-24 max-w-4xl mx-auto w-full">
-        {/* Banner */}
-        <View className="bg-white dark:bg-slate-800 rounded-2xl p-6 border border-slate-200/60 dark:border-slate-700 shadow-sm mb-6">
-          <View className="flex-row items-center gap-5">
-            <View className="w-16 h-16 rounded-2xl bg-primary items-center justify-center shadow-lg">
-              <Text className="text-white text-2xl font-bold">{profile.name ? profile.name.substring(0, 2).toUpperCase() : 'JS'}</Text>
-            </View>
-            <View className="space-y-1">
-              <Text className="text-2xl font-extrabold text-primary dark:text-white leading-tight">Zoxm Invoice - {profile.name || 'J&S Global Trading'}</Text>
-              <View className="flex-row items-center gap-1.5 mt-1">
-                <MaterialIcons name="verified" size={18} color="#3b82f6" />
-                <Text className="text-slate-500 dark:text-slate-400 text-sm font-medium">Verified Business Account</Text>
-              </View>
-            </View>
-          </View>
-        </View>
+      <ScrollView 
+        className="flex-1 px-4" 
+        contentContainerStyle={{ paddingBottom: 120, paddingTop: 20 }}
+        showsVerticalScrollIndicator={false}
+      >
 
-        {/* Metrics Section */}
+        {/* Overview Section */}
         <View className="mb-6">
           <View className="flex-row items-center justify-between mb-4 px-1">
-            <Text className="text-lg font-bold text-slate-800 dark:text-white">Overview</Text>
-            <Text className="text-xs font-semibold text-slate-400 uppercase tracking-wider">This Month</Text>
+            <Text className="text-xl font-black text-primary dark:text-white">{t('overview')}</Text>
+            <Text className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">{t('thisMonth')}</Text>
           </View>
           
-          <View className="flex-row flex-wrap justify-between gap-y-3">
-             <View className="w-full flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 p-5 shadow-sm">
-               <Text className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Total Revenue</Text>
-               <Text className="text-4xl font-black text-primary dark:text-white tracking-tight">${totalRevenue.toFixed(2)}</Text>
-             </View>
-             
-             <View className="w-[48%] flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 p-5 shadow-sm">
-               <Text className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Invoices</Text>
-               <Text className="text-3xl font-black text-slate-800 dark:text-white">{invoices.length || 42}</Text>
-             </View>
-             <View className="w-[48%] flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 p-5 shadow-sm">
-               <Text className="text-xs font-bold text-green-600 dark:text-green-400 uppercase tracking-widest mb-1">Paid</Text>
-               <Text className="text-3xl font-black text-slate-800 dark:text-white">{paidCount || 28}</Text>
-             </View>
-             <View className="w-[48%] flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 p-5 shadow-sm">
-               <Text className="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest mb-1">Pending</Text>
-               <Text className="text-3xl font-black text-slate-800 dark:text-white">{pendingCount || 10}</Text>
-             </View>
-             <View className="w-[48%] flex-col justify-between rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 p-5 shadow-sm">
-               <Text className="text-xs font-bold text-red-600 dark:text-red-400 uppercase tracking-widest mb-1">Overdue</Text>
-               <Text className="text-3xl font-black text-slate-800 dark:text-white">{overdueCount || 4}</Text>
-             </View>
+          <View className="gap-3">
+            {/* Revenue & Due Row (Financial visibility for Admin/Manager only) */}
+            {(currentRole === null || checkPermission(currentRole, 'canViewReports')) && (
+              <View className="flex-row gap-3">
+                <View className="flex-1 bg-white dark:bg-slate-900 rounded-[28px] border border-slate-50 dark:border-slate-800 p-5 shadow-xl shadow-slate-100 dark:shadow-none">
+                  <Text className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mb-1">{t('totalRevenue')}</Text>
+                  <Text className="text-2xl font-black text-primary dark:text-emerald-400 tracking-tighter">
+                    {formatAmount(totalRevenue, profile.currency_symbol || '₹')}
+                  </Text>
+                </View>
+                <TouchableOpacity 
+                  onPress={() => navigation.navigate('DueCustomers')}
+                  className="flex-1 bg-white dark:bg-slate-900 rounded-[28px] border border-red-50 dark:border-red-900/30 p-5 shadow-xl shadow-slate-100 dark:shadow-none"
+                >
+                  <Text className="text-[10px] font-bold text-red-400 dark:text-red-500 uppercase tracking-[0.2em] mb-1">Invoice Due</Text>
+                  <Text className="text-2xl font-black text-red-500 dark:text-red-400 tracking-tighter">
+                    {formatAmount(globalDues.totalInvoice, profile.currency_symbol || '₹')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            
+            {/* Stats Grid */}
+            <View className="flex-row flex-wrap justify-between gap-y-3">
+              <StatCard 
+                 label={t('invoices')} 
+                 value={activeInvoices.length} 
+                 onPress={() => navigation.navigate('Invoices')}
+                 isDark={isDark}
+              />
+              <StatCard 
+                label={t('paid')} 
+                value={paidCount} 
+                color="green" 
+                onPress={() => navigation.navigate('Invoices', { status: 'Paid' })}
+                isDark={isDark}
+              />
+                <StatCard 
+                  label={t('pendingOrder')} 
+                  value={pendingOrdersCount} 
+                  color="orange" 
+                  onPress={() => navigation.navigate('Orders', { status: 'Pending' })} 
+                  isDark={isDark}
+                />
+                
+                {(currentRole === null || checkPermission(currentRole, 'canViewReports')) && (
+                  <StatCard 
+                    label="Ledger Due" 
+                    value={formatAmount(globalDues.totalLedger, profile.currency_symbol || '₹')} 
+                    color="red" 
+                    onPress={() => navigation.navigate('CustomerLedger')}
+                    isDark={isDark}
+                  />
+                )}
+              </View>
           </View>
         </View>
 
-        {/* Quick Actions */}
-        <View className="mb-6">
-          <Text className="text-lg font-bold mb-4 px-1 text-slate-800 dark:text-white">Quick Actions</Text>
-          <View className="flex-row justify-between">
-            <TouchableOpacity onPress={() => navigation.navigate('CreateInvoice')} className="w-[31%] flex-col items-center justify-center p-5 bg-primary rounded-2xl shadow-md gap-2">
-              <MaterialIcons name="add-circle" size={30} color="white" />
-              <Text className="text-[11px] font-bold text-white text-center uppercase tracking-wider leading-tight">Create Invoice</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Customers')} className="w-[31%] flex-col items-center justify-center p-5 bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-2xl shadow-sm gap-2">
-              <MaterialIcons name="person-add" size={30} className="text-primary dark:text-white" />
-              <Text className="text-[11px] font-bold text-primary dark:text-white text-center uppercase tracking-wider leading-tight">Add Customer</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Items')} className="w-[31%] flex-col items-center justify-center p-5 bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-2xl shadow-sm gap-2">
-               <MaterialIcons name="inventory-2" size={30} className="text-primary dark:text-white" />
-              <Text className="text-[11px] font-bold text-primary dark:text-white text-center uppercase tracking-wider leading-tight">Add Item</Text>
-            </TouchableOpacity>
+        {/* Quick Actions Grid */}
+        <View className="mb-8">
+          <Text className="text-xl font-black mb-4 px-1 text-primary dark:text-white">{t('quickActions')}</Text>
+          <View className="flex-row flex-wrap justify-between gap-y-3">
+            <ActionButton 
+              icon="add-circle" 
+              label={t('createInvoice')} 
+              isPrimary 
+              onPress={() => navigation.navigate('CreateInvoice')} 
+              isDark={isDark}
+              theme={theme}
+              testID="btn-create-invoice"
+            />
+            <ActionButton 
+              icon="inventory" 
+              label={t('inventory')} 
+              isPrimary 
+              onPress={() => navigation.navigate('Inventory')} 
+              isDark={isDark}
+              theme={theme}
+            />
+            <ActionButton 
+              icon="shopping-cart" 
+              label={t('newOrder')} 
+              isPrimary 
+              onPress={() => navigation.navigate('CreateOrder')} 
+              isDark={isDark}
+              theme={theme}
+            />
+            <ActionButton 
+              icon="person-add" 
+              label={t('addCustomer')} 
+              onPress={() => navigation.navigate('EditCustomerProfile')} 
+              isDark={isDark}
+              theme={theme}
+            />
+            <ActionButton 
+              icon="menu-book" 
+              label="Ledger" 
+              onPress={() => navigation.navigate('CustomerLedger')} 
+              isDark={isDark}
+              theme={theme}
+            />
+            <ActionButton 
+              icon="grid-view" 
+              label={t('others')} 
+              onPress={() => navigation.navigate('Others')} 
+              isDark={isDark}
+              theme={theme}
+            />
           </View>
         </View>
 
         {/* Recent Invoices */}
-        <View className="mb-8">
+        <View className="mb-4">
           <View className="flex-row justify-between items-center mb-4 px-1">
-            <Text className="text-lg font-bold text-slate-800 dark:text-white">Recent Invoices</Text>
+            <Text className="text-xl font-black text-primary dark:text-white">{t('recentInvoices')}</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Invoices')}>
-              <Text className="text-primary dark:text-blue-400 text-sm font-bold">View All</Text>
+              <Text className="text-blue-500 dark:text-blue-400 text-sm font-black underline">{t('viewAll')}</Text>
             </TouchableOpacity>
           </View>
 
-          <View className="space-y-3 gap-3">
-            {topRecent.length > 0 ? topRecent.map((item, index) => (
-              <TouchableOpacity key={index} className="bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-2xl p-4 flex-row justify-between items-center shadow-sm">
-                <View className="flex-row gap-4 items-center">
-                  <View className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 items-center justify-center">
-                    <Text className="text-primary dark:text-white font-bold text-lg">{item.customerName?.substring(0, 2).toUpperCase() || 'NA'}</Text>
-                  </View>
-                  <View>
-                    <Text className="font-bold text-slate-900 dark:text-white">{item.customerName}</Text>
-                    <Text className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">{item.invoiceNumber} • {item.date}</Text>
-                  </View>
-                </View>
-                <View className="items-end">
-                  <Text className="font-black text-slate-900 dark:text-white text-lg">${(item.total || 0).toFixed(2)}</Text>
-                  <View className={`px-3 py-1 mt-1.5 rounded-full ${getStatusColor(item.status).split(' ').slice(1).join(' ')}`}>
-                    <Text className={`text-[10px] font-black uppercase tracking-widest ${getStatusColor(item.status).split(' ')[0]}`}>{item.status}</Text>
-                  </View>
-                </View>
-              </TouchableOpacity>
-            )) : (
-              // Fallback dummy items to exactly match HTML if store is empty
-              [
-                { n: "Acme Corp", d: "INV-2023-042 • Oct 24, 2023", t: "1,250.00", s: "Paid" },
-                { n: "Global Logistics", d: "INV-2023-041 • Oct 22, 2023", t: "3,400.00", s: "Pending" },
-                { n: "Tech Solutions Inc", d: "INV-2023-038 • Oct 10, 2023", t: "850.50", s: "Overdue" }
-              ].map((item, index) => (
-                <TouchableOpacity key={index} className="bg-white dark:bg-slate-800 border border-slate-200/60 dark:border-slate-700 rounded-2xl p-4 flex-row justify-between items-center shadow-sm">
-                  <View className="flex-row gap-4 items-center">
-                    <View className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-slate-700 items-center justify-center">
-                      <Text className="text-primary dark:text-white font-bold text-lg">{item.n.substring(0, 2).toUpperCase()}</Text>
-                    </View>
-                    <View>
-                      <Text className="font-bold text-slate-900 dark:text-white">{item.n}</Text>
-                      <Text className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">{item.d}</Text>
-                    </View>
-                  </View>
-                  <View className="items-end">
-                    <Text className="font-black text-slate-900 dark:text-white text-lg">${item.t}</Text>
-                    <View className={`px-3 py-1 mt-1.5 rounded-full ${getStatusColor(item.s).split(' ').slice(1).join(' ')}`}>
-                      <Text className={`text-[10px] font-black uppercase tracking-widest ${getStatusColor(item.s).split(' ')[0]}`}>{item.s}</Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
-              ))
-            )}
+          <View className="gap-3">
+            {(topRecent.length > 0 ? topRecent : []).map((item, index) => (
+              <InvoiceCard key={index} item={item} getStatusStyle={getStatusStyle} isDark={isDark} />
+            ))}
           </View>
         </View>
       </ScrollView>
+
+      {/* Calculator — Full Screen Modal */}
+      <Modal
+        visible={calcVisible}
+        animationType="slide"
+        transparent={false}
+        statusBarTranslucent
+        onRequestClose={() => setCalcVisible(false)}
+      >
+        <CalculatorScreen
+          onClose={() => setCalcVisible(false)}
+          onSendToInvoice={(amount) => {
+            setCalcVisible(false);
+            navigation.navigate('CalcSale', { prefillTotal: amount });
+          }}
+        />
+      </Modal>
     </SafeAreaView>
+  );
+}
+
+// Components
+const StatCard = ({ label, value, color, onPress, isDark, testID }) => {
+  const textColors = {
+    green: 'text-green-500 dark:text-green-400',
+    orange: 'text-orange-500 dark:text-orange-400',
+    red: 'text-red-500 dark:text-red-400',
+    indigo: 'text-indigo-600 dark:text-indigo-400',
+    default: 'text-primary dark:text-white'
+  };
+  
+  const content = (
+    <View className="w-full bg-white dark:bg-slate-900 rounded-[24px] border border-slate-50 dark:border-slate-800 p-4 shadow-xl shadow-slate-100 dark:shadow-none">
+      <Text className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5">{label}</Text>
+      <Text className={`text-2xl font-black ${textColors[color] || textColors.default}`}>{value}</Text>
+    </View>
+  );
+
+  if (onPress) {
+    return (
+      <TouchableOpacity testID={testID} onPress={onPress} activeOpacity={0.75} className="w-[48%]">
+        {content}
+      </TouchableOpacity>
+    );
+  }
+  
+  return (
+    <View className="w-[48%]">
+      {content}
+    </View>
+  );
+};
+
+const ActionButton = ({ icon, label, onPress, isPrimary, isDark, theme, testID }) => (
+  <TouchableOpacity 
+    testID={testID}
+    onPress={onPress} 
+    style={isPrimary ? { backgroundColor: theme?.primary || '#262A56' } : {}}
+    className={`w-[31%] h-24 items-center justify-center rounded-[24px] px-2 shadow-sm ${isPrimary ? '' : 'bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800'}`}
+  >
+    <MaterialIcons name={icon} size={28} color={isPrimary ? "white" : (isDark ? "#94a3b8" : (theme?.primary || "#262A56"))} />
+    <Text className={`text-[9px] font-black text-center uppercase tracking-wider mt-2 ${isPrimary ? 'text-white' : 'text-primary dark:text-slate-300'}`}>
+      {label}
+    </Text>
+  </TouchableOpacity>
+);
+
+const InvoiceCard = ({ item, getStatusStyle, isDark }) => {
+  const profile = useStore(state => state.profile);
+  const status = getStatusStyle(item.status);
+  return (
+    <View className="bg-white dark:bg-slate-900 border border-slate-50 dark:border-slate-800 rounded-[24px] p-4 flex-row justify-between items-center shadow-xl shadow-slate-100 dark:shadow-none">
+      <View className="flex-row gap-3 items-center">
+        <View className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-slate-800 items-center justify-center border border-slate-100 dark:border-slate-700">
+          <Text className="text-primary dark:text-white font-black text-lg">
+            {item.customerName?.substring(0, 2).toUpperCase() || 'NA'}
+          </Text>
+        </View>
+        <View>
+          <Text className="font-bold text-primary dark:text-white">{item.customerName}</Text>
+          <Text className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">{item.invoiceNumber} • {item.date}</Text>
+        </View>
+      </View>
+      <View className="items-end">
+        <Text className="font-black text-primary dark:text-white text-[17px]">
+          {formatAmount(item.total || 0, profile.currency_symbol || '₹')}
+        </Text>
+        <View style={{ backgroundColor: status.bg }} className="px-2.5 py-0.5 mt-1.5 rounded-lg">
+          <Text style={{ color: status.text }} className="text-[9px] font-black uppercase tracking-widest">{item.status}</Text>
+        </View>
+      </View>
+    </View>
   );
 }

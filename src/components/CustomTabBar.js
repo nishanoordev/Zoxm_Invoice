@@ -1,16 +1,23 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Platform } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useTranslation } from '../i18n/LanguageContext';
+import { useTheme } from '../theme/ThemeContext';
+import { useStore } from '../store/useStore';
+import { checkPermission } from '../utils/permissions';
 
 export default function CustomTabBar({ state, descriptors, navigation }) {
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
+  const theme = useTheme();
+  const currentRole = useStore(state => state.currentRole);
   
   const getIconName = (routeName, isFocused) => {
     switch(routeName) {
       case 'Dashboard': return isFocused ? 'home' : 'home';
       case 'Customers': return 'group';
-      case 'Items': return 'inventory';
+      case 'Inventory': return 'inventory';
       case 'Invoices': return 'receipt';
       case 'Settings': return 'settings';
       default: return 'circle';
@@ -18,8 +25,14 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
   };
 
   const getLabel = (routeName) => {
-    if (routeName === 'Dashboard') return 'Home';
-    return routeName;
+    switch(routeName) {
+      case 'Dashboard': return t('home');
+      case 'Customers': return t('customers');
+      case 'Inventory': return t('inventory');
+      case 'Invoices': return t('invoices');
+      case 'Settings': return t('settings');
+      default: return routeName;
+    }
   };
 
   return (
@@ -28,6 +41,11 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
       style={{ paddingBottom: Math.max(insets.bottom, 12) }}
     >
       {state.routes.map((route, index) => {
+        // Guard: Check permissions for the route
+        if (route.name === 'Settings' && currentRole !== null && !checkPermission(currentRole, 'canViewSettings')) {
+          return null;
+        }
+
         const { options } = descriptors[route.key];
         const label = getLabel(route.name);
         const isFocused = state.index === index;
@@ -53,13 +71,13 @@ export default function CustomTabBar({ state, descriptors, navigation }) {
             <MaterialIcons 
               name={getIconName(route.name, isFocused)} 
               size={24} 
-              className={isFocused ? 'text-primary dark:text-white' : 'text-slate-400 dark:text-slate-500'}
+              color={isFocused ? theme.primary : '#94a3b8'}
             />
             <Text className={`text-[10px] font-extrabold uppercase tracking-wide ${isFocused ? 'text-primary dark:text-white' : 'text-slate-400 dark:text-slate-500 font-bold'}`}>
               {label}
             </Text>
             {isFocused && (
-              <View className="absolute -top-3 w-8 h-1 bg-primary rounded-full" />
+              <View style={{ backgroundColor: theme.primary }} className="absolute -top-3 w-8 h-1 rounded-full" />
             )}
           </TouchableOpacity>
         );
